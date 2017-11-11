@@ -1,52 +1,123 @@
-# This is the production settings !
-# All settings that do not change across environments should be in 'fir.settings.base'
+"""
+Django settings for FIR on Heroku. Fore more info, see:
+https://github.com/heroku/heroku-django-template
+For more information on this file, see
+https://docs.djangoproject.com/en/1.9/topics/settings/
+For the full list of settings and their values, see
+https://docs.djangoproject.com/en/1.9/ref/settings/
+"""
+
+import os
+import dj_database_url
 from fir.config.base import *
 
-################################################################
-##### Change these values
-################################################################
 
-ALLOWED_HOSTS = ['FIR.DOMAIN.COM']
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "dwef32hru2h2jndwqjnfdmwqkmfwkmfqwqe21"
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+# Application definition
+
+
+MIDDLEWARE_CLASSES = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'fir.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'debug': DEBUG,
+        },
+    },
+]
+
+WSGI_APPLICATION = 'fir.wsgi.application'
+
+
+# Database
+# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fir',
-        'USER': 'fir',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
-# SMTP SETTINGS
-EMAIL_HOST = 'SMTP.DOMAIN.COM'
-EMAIL_PORT = 25
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
-# Uncomment this line to set a different reply-to address when sending alerts
-# REPLY_TO = other@address.com
-EMAIL_FROM = '"NAME" <address@email>'
+# Internationalization
+# https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-# Uncomment these lines if you want additional CC or BCC for all sent emails
-# EMAIL_CC = ['address@email']
-# EMAIL_BCC = ['address@email']
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
 
-# SECRET KEY
-SECRET_KEY = 'cwefhjqnewfjknqwfnwelkq'
+# Update database configuration with $DATABASE_URL.
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
-################################################################
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-DEBUG = False
-TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
 
-# List of callables that know how to import templates from various sources.
-# In production, we want to cache templates in memory
-TEMPLATES[0]['OPTIONS']['loaders'] = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-    )),
-)
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = [
+    os.path.join(PROJECT_ROOT, 'static'),
+]
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGGING = {
     'version': 1,
@@ -71,6 +142,3 @@ LOGGING = {
         },
     },
 }
-
-# External URL of your FIR application (used in fir_notification to render full URIs in templates)
-EXTERNAL_URL = 'https://fir1.herokuapp.com'
