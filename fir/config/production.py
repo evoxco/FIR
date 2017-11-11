@@ -32,7 +32,7 @@ EMAIL_FROM = '"NAME" <address@email>'
 # EMAIL_BCC = ['address@email']
 
 # SECRET KEY
-SECRET_KEY = 'CHANGE_DUMMY_KEY_PLEASE'
+SECRET_KEY = 'cwefhjqnewfjknqwfnwelkq'
 
 ################################################################
 
