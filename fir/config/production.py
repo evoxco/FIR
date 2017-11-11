@@ -73,4 +73,4 @@ LOGGING = {
 }
 
 # External URL of your FIR application (used in fir_notification to render full URIs in templates)
-EXTERNAL_URL = 'http://fir.example.com'
+EXTERNAL_URL = 'https://fir1.herokuapp.com'
