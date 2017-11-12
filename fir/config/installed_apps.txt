@@ -2,6 +2,3 @@ fir_alerting
 fir_todos
 fir_nuggets
 fir_api
-fir_abuse
-fir_celery
-fir_artifacts_enrichment
